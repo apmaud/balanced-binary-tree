@@ -16,13 +16,10 @@ function buildTree(array){
 
 }
 
-function sort(){
-
+function cleanArray(array){
+    return [...new Set(array)].sort();
 }
 
-function removeDuplicates(){
-
-}
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
