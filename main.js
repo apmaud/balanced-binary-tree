@@ -68,16 +68,42 @@ class Tree {
     }
     
     del(num){
-        if (!this.root){
-            return
-        }
-        else {
-            this.delNode(this.delNode(this.root, num))
-        }
+        this.root = this.delNode(this.root, num)
     }
     
     delNode(node, num){
+        if (!node){
+            return node;
+        }
+        else if (node.data < num){
+            return this.delNode(node.right, num);
+        }
+        else if (node.data > num){
+            return this.delNode(node.left, num);
+        }
+        else {
+            if(!node.left && !node.right){
+                return node = null;
+            }
+            else if (!node.left){
+                return node = node.right
+            }
+            else if (!node.right){
+                return node = node.left;
+            }
+            node.data = min(node.right);
+            node.right = delNode(node.right, node.data);
+        }
+        return node;
+    }
 
+    min(node){
+        let minVal = node.data;
+        while (node.left != null){
+            minVal = node.left.data;
+            node = node.left;
+        }
+        return minVal
     }
 }
 
