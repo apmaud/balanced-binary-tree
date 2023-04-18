@@ -122,6 +122,21 @@ class Tree {
         return Math.max(leftHeight, rightHeight) + 1
     }
 
+    getDepth(node, num){
+        var depth = -1
+        if (!node){
+            return -1
+        }
+        else if (
+            (node.data == num) || 
+            (depth = getDepth(node.left, num)) >= 0 || 
+            (depth = getDepth(node.right, num)) >= 0)
+            {
+            return depth +1
+            }
+        return depth;
+    }
+
     printNodeValue(node){
         console.log(node.data);
     }
@@ -132,12 +147,12 @@ class Tree {
         }
         
         else if (level === 0){
-            this.printNodeValue(node);
+            printNodeValue(node);
         }
 
         else if (level > 0){
-            this.levelOrderRecursion(node.left, this.printNodeValue, level-1);
-            this.levelOrderRecursion(node.right, this.printNodeValue, level-1);
+            this.levelOrderRecursion(node.left, printNodeValue, level-1);
+            this.levelOrderRecursion(node.right, printNodeValue, level-1);
         }
 
         return;
@@ -198,20 +213,35 @@ class Tree {
         printNodeValue(node.data);
     }
 
+    isBalanced(node, getHeight){
+        if (!node){
+            return true;
+        }
+        var _left = getHeight(node.left);
+        var _right = getHeight(node.right);
+        if (
+            (Math.abs((_left - _right) <= 1)) && 
+            (this.isBalanced(node.left, getHeight)) && 
+            (this.isBalanced(node.right, getHeight))
+            )
+            {
+            return true;
+            }
+        return false;
+    }
 
-    
-
+    prettyPrint(this.root, prefix = '', isLeft = true){
+        if (node === null) {
+           return;
+        }
+        if (node.right !== null) {
+          prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+        }
+        console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+        if (node.left !== null) {
+          prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+        }
+    }
 }
 
-prettyPrint = (node, prefix = '', isLeft = true) => {
-    if (node === null) {
-       return;
-    }
-    if (node.right !== null) {
-      prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
-    }
-    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
-    if (node.left !== null) {
-      prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-    }
-}
+
