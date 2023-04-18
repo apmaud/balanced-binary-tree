@@ -34,7 +34,7 @@ class Tree {
     }
     
     find(node, num){
-        if (node == null || node.data == num){
+        if (!node || node.data == num){
             return node
         }
         else if (node.data < num){
@@ -55,7 +55,7 @@ class Tree {
     }
 
     insNode(node, num){
-        if (node == null){
+        if (!node){
             node = new Node(num);
             return node
         }
@@ -86,15 +86,21 @@ class Tree {
                 return node = null;
             }
             else if (!node.left){
-                return node = node.right
+                const temp = node.right;
+                node.right = null;
+                return temp
             }
             else if (!node.right){
-                return node = node.left;
+                const temp = node.left;
+                node.left = null;
+                return temp;
             }
-            node.data = min(node.right);
-            node.right = delNode(node.right, node.data);
+            else {
+                node.data = this.min(node.right);
+                node.right = this.delNode(node.right, node.data);
+                return node;
+            }
         }
-        return node;
     }
 
     min(node){
@@ -105,6 +111,96 @@ class Tree {
         }
         return minVal
     }
+
+    getHeight(node){
+        if (!node){
+            return 0
+        }
+        const leftHeight = this.getHeight(node.left);
+        const rightHeight = this.getHeight(node.right);
+
+        return Math.max(leftHeight, rightHeight) + 1
+    }
+
+    printNodeValue(node){
+        console.log(node.data);
+    }
+
+    levelOrderRecursion(node, printNodeValue, level = 0){
+        if (!node){
+            return;
+        }
+        
+        else if (level === 0){
+            this.printNodeValue(node);
+        }
+
+        else if (level > 0){
+            this.levelOrderRecursion(node.left, this.printNodeValue, level-1);
+            this.levelOrderRecursion(node.right, this.printNodeValue, level-1);
+        }
+
+        return;
+    }
+
+    levelOrder(printNodeValue){
+        const height = this.getHeight(this.root);
+        for (let level = 0; level <= height; level++){
+            this.levelOrderRecursion(this.root, printNodeValue, level);
+        }
+    }
+
+    inOrder(node, printNodeValue){
+        if (!node){
+            return;
+        }
+        else if (!printNodeValue){
+            const array = [];
+            array.push(this.inOrder(node.left));
+            array.push(node.data);
+            array.push(this.inOrder(node.right));
+            return array;
+        }
+        this.inOrder(node.left, printNodeValue)
+        printNodeValue(node.data);
+        this.inOrder(node.right,printNodeValue)
+    }
+
+    preOrder(node, printNodeValue){
+        if(!node){
+            return;
+        }
+        else if (!printNodeValue){
+            const array = [];
+            array.push(node.data);
+            array.push(this.preOrder(node.left));
+            array.push(this.preOrder(node.right));
+            return array;
+        }
+        printNodeValue(node.data);
+        this.preOrder(node.left, printNodeValue);
+        this.preOrder(node.right, printNodeValue);
+    }
+
+    postOrder(node, printNodeValue){
+        if(!node){
+            return;
+        }
+        else if (!printNodeValue){
+            const array = [];
+            array.push(this.postOrder(node.left));
+            array.push(this.postOrder(node.right));
+            array.push(node.data);
+            return array
+        }
+        this.postOrder(node.left, printNodeValue);
+        this.postOrder(node.right, printNodeValue);
+        printNodeValue(node.data);
+    }
+
+
+    
+
 }
 
 prettyPrint = (node, prefix = '', isLeft = true) => {
